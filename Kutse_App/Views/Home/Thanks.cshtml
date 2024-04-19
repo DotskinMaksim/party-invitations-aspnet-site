@@ -1,0 +1,56 @@
+﻿﻿@model Kutse_App.Models.Guest
+
+@{
+    ViewBag.Title = "Aitah";
+}
+<link href="~/Views/Home/style.css" rel="stylesheet" />
+<script>
+        function Meeldetus() {
+                @{
+                    var holiday = new Kutse_App.Models.HolidayLists();
+
+
+                    int month = DateTime.Now.Month;
+
+
+                    string date = Url.Content(holiday.HolidayDates[month]);
+
+                    string image = Url.Content(holiday.ImageUrls[month]);
+
+
+                    WebMail.SmtpServer = "smtp.gmail.com";
+                    WebMail.SmtpPort = 587;
+                    WebMail.EnableSsl = true;
+                    WebMail.UserName = "mvcprogrammeermine@gmail.com";
+                    WebMail.Password = "hnil npyp rxex wpuz";
+                    WebMail.From = "mvcprogrammeermine@gmail.com";
+                    ViewBag.Message = "Kiri on saatnud!";
+                    WebMail.Send(@Model.Email, "Meeldetuletus", @Model.Name + ", ara unusta. Pidu toimub " + date + "! Sind ootavad väga!",
+                    null, null,
+                            filesToAttach: new String[] { Path.Combine(Server.MapPath("~/Images/"), Path.GetFileName(image)) }
+                           );
+                }
+            }
+</script>
+
+
+
+<div>
+    <p> Tänan sind, @Model.Name </p>
+
+</div>
+
+<div>
+    @if (Model.WillAttend == true)
+    {
+        <p>Ootame sind kallis sõber!</p>
+        <p><img src="~/Images/happy.png" /></p>
+        <input type="button" onclick="Meeldetus" value="Saada meeldetust" class="btn btn-primary" />
+
+    }
+    else
+    {
+        <p>Väga kurb uudis. Näeme hiljem!</p>
+        <p><img src="~/Images/sad.png" /></p>
+    }
+</div>

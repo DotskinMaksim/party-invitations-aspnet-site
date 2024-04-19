@@ -1,0 +1,31 @@
+﻿@model Kutse_App.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+<h4>Kasutage sisselogimiseks teist teenust.</h4>
+<hr />
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                Väliseid autentimisteenuseid pole seadistatud. Lisainfo välise autentimise seadistamise kohta selles ASP.NET rakenduses leiate <a href="https://go.microsoft.com/fwlink/?LinkId=403804">sellest artiklist</a>.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList">
+                <p>
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
+                        <button type="submit" class="btn btn-outline-dark" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Logi sisse kasutades oma @p.Caption kontot">@p.AuthenticationType</button>
+                    }
+                </p>
+            </div>
+        }
+    }
+}
